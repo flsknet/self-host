@@ -1,3 +1,10 @@
+# Flask Self-Host
+
+The following are instructions on how to set up a self-hosted Flask instance on an Ubuntu system.
+
+## Set up firewall
+
+```bash
 apt-get update && apt-get upgrade -y
 
 ufw allow ssh
@@ -7,7 +14,11 @@ ufw default deny
 ufw enable
 
 reboot
+```
 
+## Set up Docker
+
+```bash
 apt update
 apt install ca-certificates curl git
 install -m 0755 -d /etc/apt/keyrings
@@ -24,8 +35,15 @@ EOF
 
 apt update
 apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
 
-git clone https://github.com/flsknet/self-host flsk
+## Set up Flask
+
+```bash
+git clone https://github.com/flsknet/self-host.git flsk
 cd flsk
+chmod +x ./generate.sh
+./generate.sh [HOSTNAME]
 
 docker compose up -d
+```
