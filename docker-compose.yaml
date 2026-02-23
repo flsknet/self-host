@@ -1,0 +1,40 @@
+name: flsk
+
+services:
+  db:
+    image: postgres:18.1-alpine
+    restart: always
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./data/postgres-data:/var/lib/postgresql
+
+  api:
+    image: ghcr.io/flsknet/api
+    restart: always
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+
+  web:
+    image: ghcr.io/flsknet/web
+    restart: always
+    env_file: .env
+
+  caddy:
+    image: docker.io/caddy
+    restart: always
+    env_file: .env
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data/caddy-data:/data
+      - ./data/caddy-config:/config
